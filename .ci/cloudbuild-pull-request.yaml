@@ -32,7 +32,7 @@ steps:
       - "-c"
       - |
         rm -rf * .*
-        git clone git@github.com:Nuvalence/devstream-web.git . -b ${BRANCH_NAME}
+        git clone git@github.com:dsgov-acme/devstream-web.git . -b ${BRANCH_NAME}
     volumes:
       - name: "ssh"
         path: /root/.ssh
