@@ -170,7 +170,7 @@ steps:
       - "-c"
       - |
         gcloud deploy releases create "${REPO_NAME}-agency--${SHORT_SHA}" \
-          --project=devstream-services \
+          --project=devstream-shared-services-4179 \
           --region=us-east4 \
           --delivery-pipeline="${REPO_NAME}-agency" \
           --gcs-source-staging-dir=gs://devstream-application-pipeline_clouddeploy/source \
@@ -186,7 +186,7 @@ steps:
       - "-c"
       - |
         gcloud deploy releases create "${REPO_NAME}-public--${SHORT_SHA}" \
-          --project=devstream-services \
+          --project=devstream-shared-services-4179 \
           --region=us-east4 \
           --delivery-pipeline="${REPO_NAME}-public" \
           --gcs-source-staging-dir=gs://devstream-application-pipeline_clouddeploy/source \

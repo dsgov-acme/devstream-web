@@ -10,7 +10,7 @@ environmentJSON: {
         apiKey: "AIzaSyCBhPXQArHs0vCqLc9CyrMJt2mI2UB-tRc",
         authDomain: "devstream-dev.firebaseapp.com",
       },
-      tenantId: 'agency-portal-ug493',
+      tenantId: 'agency-portal-jsfcq',
     },
     sessionExpiration: {
       idleTimeSeconds: 1800,
