@@ -1,0 +1,27 @@
+<nuverial-breadcrumb class="fullscreen" [breadCrumbs]="breadCrumbs"></nuverial-breadcrumb>
+<div class="dsg-confirmation__message">
+  <h3>
+    Application Submitted
+    <nuverial-icon class="dsg-confirmation__message--icon" iconName="check_circle_outline"></nuverial-icon>
+  </h3>
+  Thank you for submitting your application. Your Application ID is <b>{{externalTransactionId$ | async | uppercase}}</b>.
+  <div class="dsg-confirmation__message--print">
+    <b>PRINT THIS PAGE FOR YOUR RECORDS</b>
+    <span class="dsg-confirmation__message--print-button" onclick="window.print()">
+      <nuverial-icon class="dsg-confirmation__message--icon" iconName="print-icon"></nuverial-icon>
+      Print
+    </span>
+  </div>
+</div>
+<div class="dsg-confirmation__actions">
+  <nuverial-button
+    class="dsg-confirmation__actions--back"
+    ariaLabel="Dashboard"
+    (click)="navigateToDashboard()"
+    (keyup.enter)="navigateToDashboard()"
+    buttonStyle="filled"
+    colorTheme="primary"
+    tabindex="0"
+    >GO TO MY DASHBOARD</nuverial-button
+  >
+</div>

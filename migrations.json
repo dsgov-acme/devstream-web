@@ -1,0 +1,79 @@
+{
+  "migrations": [
+    {
+      "cli": "nx",
+      "description": "Split global configuration files into individual project.json files. This migration has been added automatically to the beginning of your migration set to retroactively make them work with the new version of Nx.",
+      "implementation": "./src/migrations/update-15-7-0/split-configuration-into-project-json-files",
+      "name": "15-7-0-split-configuration-into-project-json-files",
+      "package": "@nrwl/workspace",
+      "version": "15.7.0-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Update to Cypress v12. Cypress 12 contains a handful of breaking changes that might causes tests to start failing that nx cannot directly fix. Read more Cypress 12 changes: https://docs.cypress.io/guides/references/migration-guide#Migrating-to-Cypress-12-0.This migration will only run if you are already using Cypress v11.",
+      "factory": "./src/migrations/update-15-5-0/update-to-cypress-12",
+      "name": "update-to-cypress-12",
+      "package": "@nrwl/cypress",
+      "version": "15.5.0-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Update the @angular/cli package version to ~15.1.0.",
+      "factory": "./src/migrations/update-15-5-0/update-angular-cli",
+      "name": "update-angular-cli-version-15-1-0",
+      "package": "@nrwl/angular",
+      "requires": {
+        "@angular/core": ">=15.1.0"
+      },
+      "version": "15.5.0-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Install the required angular-devkit packages as we do not directly depend on them anymore",
+      "factory": "./src/migrations/update-15-7-0/install-required-packages",
+      "name": "install-required-packages",
+      "package": "@nrwl/angular",
+      "version": "15.7.0-beta.1"
+    },
+    {
+      "cli": "nx",
+      "description": "Add node_modules to root eslint ignore",
+      "factory": "./src/migrations/update-15-7-1/add-eslint-ignore",
+      "name": "add-eslint-ignore",
+      "package": "@nrwl/linter",
+      "version": "15.7.1-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Refactor the Storybook target options",
+      "factory": "./src/migrations/update-15-4-6/refactor-executor-options",
+      "name": "update-15.4.6",
+      "package": "@nrwl/storybook",
+      "version": "15.4.6-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Add @nrwl/webpack if it is missing and is used.",
+      "factory": "./src/migrations/update-15-5-3/ensure-webpack-package",
+      "name": "update-15-5-3",
+      "package": "@nrwl/storybook",
+      "version": "15.5.3-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Add @storybook/addon-essentials to all project-level configs and attempt to remove root config.",
+      "factory": "./src/migrations/update-15-7-0/add-addon-essentials-to-all",
+      "name": "update-15-7-0",
+      "package": "@nrwl/storybook",
+      "version": "15.7.0-beta.0"
+    },
+    {
+      "cli": "nx",
+      "description": "Split global configuration files (e.g., workspace.json) into individual project.json files.",
+      "implementation": "./src/migrations/update-15-7-0/split-configuration-into-project-json-files",
+      "name": "15-7-0-split-configuration-into-project-json-files",
+      "package": "@nrwl/workspace",
+      "version": "15.7.0-beta.0"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+<div class="builder-container">
+  <ng-container *ngIf="loading">
+    <nuverial-spinner class="overlay"></nuverial-spinner>
+  </ng-container>
+  <div class="breadcrumb-container">
+    <nuverial-breadcrumb [breadCrumbs]="breadCrumbs"></nuverial-breadcrumb>
+  </div>
+
+  <ng-container>
+    <dsg-schema-builder-header [metaData]="metaDataFields"></dsg-schema-builder-header>
+  </ng-container>
+
+  <ng-container>
+    <ng-container [ngSwitch]="currentSelectorTab" child1>
+      <div class="split-container-1">
+        <section *ngSwitchCase="selectorTabs[0].key">
+          <section class="formio-builder">
+            <form-builder #formio [form]="{}" [options]="options"></form-builder>
+          </section>
+          <section class="selector-options-wrapper">
+            <nuverial-button ariaLabel="Save changes" buttonStyle="outlined" buttonType="button" colorTheme="primary">Save changes </nuverial-button>
+          </section>
+        </section>
+        <section *ngSwitchCase="selectorTabs[1].key">
+          <nuverial-json-editor [formioJSONObject]="formioJSONObject"> </nuverial-json-editor>
+        </section>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

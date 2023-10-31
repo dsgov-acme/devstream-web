@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@dsg/shared-theme';
+@use '@dsg/shared-theme/partials/mixins' as mixins;
+@import '~@fortawesome/fontawesome-free/css/all.css'; // used by formio
+@import '~jsoneditor/dist/jsoneditor.min.css';
+
+@include mixins.menu-styleMenu();
+@include mixins.snackBar-styleSnackBar();
+@include mixins.toolTop-styleTooltip();
+@include mixins.checkbox-styleCheckbox();

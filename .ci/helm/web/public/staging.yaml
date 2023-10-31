@@ -1,0 +1,23 @@
+environment: "staging"
+
+net:
+  host: "public-staging.devstream.dsgov.demo.nuvalence.io"
+
+environmentJSON: {
+  authenticationConfiguration: {
+    firebaseConfiguration: {
+      firebase: {
+        apiKey: "AIzaSyDp5wzHrVUM-VCEbDaXryh6Staging",
+        authDomain: "devstream-staging.firebaseapp.com",
+      },
+      tenantId: '[[.Firebase.Staging.TenantId.Public]]',
+    },
+    sessionExpiration: {
+      idleTimeSeconds: 1800,
+      sessionTimeSeconds: 64800,
+    },
+  },
+  httpConfiguration: {
+    baseUrl: "https://api-staging.devstream.dsgov.demo.nuvalence.io",
+  },
+}

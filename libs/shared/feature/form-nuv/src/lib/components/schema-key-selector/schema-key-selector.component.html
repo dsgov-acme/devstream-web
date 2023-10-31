@@ -1,0 +1,17 @@
+<div class="schema-key-selector">
+  <ng-container *ngIf="selectedSchemaKey; else modalButton">
+    <div class="schema-key-selector__selected">
+      <span class="tag-text">{{selectedSchemaKey}}</span>
+      <span class="schema-key-selector__selected--unselect" (click)="clearSelectedSchemaKey()" (keyup.enter)="clearSelectedSchemaKey()" tabindex="0">
+        <nuverial-icon iconName="close"></nuverial-icon>
+      </span>
+    </div>
+  </ng-container>
+
+  <ng-template #modalButton>
+    <div class="schema-key-selector__button" [attr.aria-label]="'map schema attribute'" (click)="openModal()" (keyup.enter)="openModal()" tabindex="0">
+      <nuverial-icon [outlined]="true" iconName="schema"></nuverial-icon>
+      MAP SCHEMA ATTRIBUTE
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,73 @@
+@use '@dsg/shared-theme/partials/functions/rem';
+
+:host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+
+  .header {
+    display: flex;
+    justify-content: center;
+    padding-top: rem.fromPx(36px);
+    padding-bottom: rem.fromPx(40px);
+  }
+
+  .cards-container {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+
+    .card {
+      border: 1px solid var(--theme-color-m3-neutral-90);
+      border-radius: 10px;
+      padding: 8px 14px 16px 14px;
+      height: rem.fromPx(180px);
+      width: rem.fromPx(222px);
+      display: flex;
+      flex-direction: column;
+
+      &-header {
+        ::ng-deep nuverial-icon {
+          .mat-icon {
+            font-size: rem.fromPx(26px);
+          }
+        }
+
+        h3 {
+          font-size: var(--theme-typography-font-size-x-large);
+          padding-top: rem.fromPx(8px);
+          padding-bottom: rem.fromPx(4px);
+        }
+      }
+
+      .description {
+        font-size: rem.fromPx(12px);
+      }
+
+      &-footer {
+        display: flex;
+        margin-top: auto;
+        align-items: center;
+        justify-content: space-between;
+        text-transform: uppercase;
+        color: var(--theme-color-tertiary) !important;
+        font-size: rem.fromPx(16px);
+        padding-right: fromPx(8px);
+        letter-spacing: 0.5px;
+
+        &.flex-end {
+          justify-content: flex-end;
+        }
+
+        ::ng-deep nuverial-icon {
+          .mat-icon {
+            cursor: pointer;
+            color: var(--theme-color-tertiary) !important;
+            font-size: rem.fromPx(18px);
+          }
+        }
+      }
+    }
+  }
+}

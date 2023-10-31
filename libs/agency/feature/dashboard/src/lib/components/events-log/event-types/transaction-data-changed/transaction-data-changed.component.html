@@ -1,0 +1,27 @@
+<ng-container *ngIf="eventUpdates.length > 0">
+  <div>
+    <ng-container *ngFor="let updates of eventUpdates trackBy: trackByFn">
+      <div class="activity-status">
+        <span class="label">{{updates.label}}</span> <span class="italic">from</span>
+        '{{updates.oldState}}''
+        <a
+          class="download-link"
+          *ngIf="updates.oldDocumentId"
+          (click)="openDocument(updates.oldDocumentId)"
+          (keyup.enter)="openDocument(updates.oldDocumentId)"
+          tabindex="0"
+          >View</a
+        >
+        <span class="italic">to</span> '{{updates.newState}}'
+        <a
+          class="download-link"
+          *ngIf="updates.newDocumentId"
+          (click)="openDocument(updates.newDocumentId)"
+          (keyup.enter)="openDocument(updates.newDocumentId)"
+          tabindex="0"
+          >View</a
+        >
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

@@ -1,0 +1,25 @@
+<header class="header">
+  <h1>Admin Portal</h1>
+</header>
+<div class="cards-container">
+  <ng-container *ngFor="let card of cards; trackBy: trackByFn">
+    <div class="card">
+      <header class="card-header">
+        <nuverial-icon class="material-symbols-outlined" [iconName]="card.icon" [outlined]="true"></nuverial-icon>
+        <h3>{{card.title}}</h3>
+      </header>
+      <div class="description">{{card.description}}</div>
+      <footer class="card-footer" [class.flex-end]="!card.tooltip">
+        <nuverial-icon
+          class="material-symbols-outlined tooltip-icon"
+          *ngIf="card.tooltip"
+          [iconName]="'info'"
+          [outlined]="true"
+          [tooltip]="card.tooltip"
+          [tooltipDirection]="'left'"
+        ></nuverial-icon>
+        <a class="card-footer-link" [routerLink]="[card.route]">Begin</a>
+      </footer>
+    </div>
+  </ng-container>
+</div>

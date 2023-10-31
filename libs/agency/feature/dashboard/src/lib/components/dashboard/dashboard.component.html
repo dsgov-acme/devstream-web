@@ -1,0 +1,95 @@
+<ng-container *ngIf="dashboardDetails$ | async; else loading">
+  <h1 class="title">Claims</h1>
+  <ng-container class="transactions-list">
+    <div class="transactions-list__actions">
+      <nuverial-text-input
+        ariaLabel="Search transactions"
+        [formControl]="searchInput"
+        [suffixIcon]="searchBoxIcon"
+        [type]="'text'"
+        (clickIcon)="clearSearch()"
+        (keyup.enter)="handleSearch()"
+        (keyup)="setSearchBoxIcon()"
+        placeholder="Find by Transaction ID"
+        suffixAriaLabel="Search transactions"
+      />
+    </div>
+    <div class="transactions-list__table">
+      <ng-container *ngIf="tabs.length">
+        <mat-tab-group class="transactions-list__table--tabs" [selectedIndex]="activeTabIndex" (selectedTabChange)="switchTabs($event)">
+          <ng-container *ngFor="let tab of tabs; trackBy: trackByFn">
+            <mat-tab [attr.aria-label]="tab.label" [label]="tab.label">
+              <ng-template mat-tab-label>
+                <div class="transactions-list__tab">
+                  {{tab.label | titlecase}}
+                  <!-- for now we will only show the count for the status tab -->
+                  <ng-container *ngIf="tab.key === 'status'">
+                    <span class="transactions-list__tab--badge">{{tab.count}}</span>
+                  </ng-container>
+                </div>
+              </ng-template>
+            </mat-tab>
+          </ng-container>
+        </mat-tab-group>
+      </ng-container>
+      <ng-container>
+        <table
+          aria-describedby="transactions list table"
+          [dataSource]="dataSourceTable"
+          [matSortActive]="pagingRequestModel.sortBy"
+          [matSortDirection]="sortDirection"
+          (matSortChange)="sortData($event)"
+          mat-table
+          matSort
+          multiTemplateDataRows
+        >
+          <ng-container *ngFor="let col of displayedColumns; trackBy: trackByFn" [matColumnDef]="col.attributePath">
+            <th
+              class="transactions-list__table--header"
+              *matHeaderCellDef
+              [disabled]="col.sortable ? false : true"
+              [mat-sort-header]="col.sortable === true ? col.attributePath : ''"
+              mat-header-cell
+            >
+              {{col.columnLabel | dsgSplitCamelCase }}
+            </th>
+            <span *ngIf="col.displayFormat === 'PRIORITY'; else regularColumn">
+              <td *matCellDef="let element" mat-cell>
+                <span class="priority" [ngClass]="element[col.attributePath].class">
+                  <nuverial-icon class="priority-icon" [iconName]="element[col.attributePath].icon" [outlined]="true"></nuverial-icon>
+                  <span>{{element[col.attributePath].label}}</span>
+                </span>
+              </td>
+            </span>
+            <ng-template #regularColumn>
+              <td *matCellDef="let element" mat-cell>
+                {{col.attributePath === 'externalId' ? (element[col.attributePath] | uppercase) : element[col.attributePath]}}
+              </td>
+            </ng-template>
+          </ng-container>
+          <tr *matHeaderRowDef="displayColumnAttributePaths" mat-header-row></tr>
+          <tr *matRowDef="let row; columns: displayColumnAttributePaths;" (click)="navigateToTransactionDetails(row.id)" mat-row></tr>
+        </table>
+        <ng-container *ngIf="transactionListIsLoading">
+          <nuverial-spinner></nuverial-spinner>
+        </ng-container>
+      </ng-container>
+
+      <mat-paginator
+        aria-label="Select page"
+        #tablePaginator
+        [class.hidden]="!pagingMetadata?.totalCount"
+        [length]="pagingMetadata?.totalCount"
+        [pageIndex]="pagingMetadata?.pageNumber"
+        [pageSize]="pagingMetadata?.pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="setPage($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </ng-container>
+</ng-container>
+<ng-template #loading>
+  <nuverial-spinner></nuverial-spinner>
+</ng-template>

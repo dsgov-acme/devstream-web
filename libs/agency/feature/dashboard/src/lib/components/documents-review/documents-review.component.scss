@@ -1,0 +1,103 @@
+@use '@dsg/shared-theme/partials/functions/rem';
+@use '@dsg/shared-theme/partials/variables' as themeVars;
+
+:host {
+  display: block;
+
+  .documents-review {
+    margin: rem.fromPx(40px);
+
+    &__left {
+      max-width: 500px;
+      display: inline-block;
+      @media screen and (max-width: themeVars.$layout-desktop-max-content-width) {
+        display: block;
+      }
+    }
+
+    &__document {
+      background-color: var(--theme-color-m3-neutral-95);
+      padding: 20px;
+      border-radius: 5px;
+      margin: 7px;
+
+      &--title {
+        padding: 15px 0;
+      }
+
+      &--reasons {
+        font-size: var(--theme-typography-font-size-small);
+        font-weight: var(--theme-typography-font-weight-bold);
+
+        ul {
+          margin: 5px 5px 5px -15px;
+        }
+
+        li {
+          padding: 2px 0;
+        }
+      }
+
+      &--reviewed-by {
+        font-style: italic;
+        color: var(--theme-color-black);
+        font-weight: var(--theme-typography-font-weight-normal);
+        margin-top: 10px;
+      }
+
+      &--link {
+        float: right;
+        border-right: 1px solid var(--theme-color-m3-neutral-80);
+        color: var(--theme-color-tertiary);
+        text-decoration: underline;
+        padding: 15px 30px;
+        cursor: pointer;
+
+        @media screen and (max-width: themeVars.$layout-desktop-max-content-width) {
+          float: none;
+          border-right: 1px solid var(--theme-color-m3-neutral-80);
+          color: var(--theme-color-tertiary);
+          text-decoration: underline;
+          padding: 15px 30px;
+          cursor: pointer;
+          position: relative;
+          display: flex;
+        }
+
+        @media screen and (max-width: themeVars.$layout-medium-screen-breakpoint) {
+          border-right: none;
+          padding: 0px 20px 10px 20px;
+        }
+      }
+
+      &--status {
+        float: right;
+        padding: 0 20px;
+        width: 175px;
+        position: relative;
+        top: -3px;
+        cursor: pointer;
+
+        @media screen and (max-width: themeVars.$layout-medium-screen-breakpoint) {
+          float: none;
+          padding: 0;
+          width: 175px;
+          position: relative;
+          top: -3px;
+          cursor: pointer;
+          display: inline-block;
+        }
+      }
+
+      &--error {
+        float: right;
+        width: 0px;
+        position: relative;
+        top: 10px;
+        display: inline;
+        right: 25px;
+        z-index: 1;
+      }
+    }
+  }
+}

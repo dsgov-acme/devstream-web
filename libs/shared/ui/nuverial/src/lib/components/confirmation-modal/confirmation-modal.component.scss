@@ -1,0 +1,41 @@
+@use '@dsg/shared-theme/partials/functions/rem';
+@use '@dsg/shared-theme/partials/variables' as themeVars;
+
+:host {
+  display: block;
+
+  .confirmation-modal {
+    padding: 40px;
+    width: 400px;
+
+    .modal-header {
+      float: right;
+      position: relative;
+      bottom: 20px;
+      left: 20px;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      color: var(--theme-color-primary);
+    }
+
+    .modal-btn {
+      ::ng-deep button {
+        text-transform: uppercase;
+        font-size: 13px;
+        height: 35px;
+      }
+
+      &.cancel-btn {
+        ::ng-deep .mat-mdc-outlined-button {
+          border-width: 2px;
+
+          &:active {
+            background-color: white;
+          }
+        }
+      }
+    }
+  }
+}

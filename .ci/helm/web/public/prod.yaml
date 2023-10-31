@@ -1,0 +1,23 @@
+environment: "prod"
+
+net:
+  host: "public-prod.devstream.dsgov.demo.nuvalence.io"
+
+environmentJSON: {
+  authenticationConfiguration: {
+    firebaseConfiguration: {
+      firebase: {
+        apiKey: "AIzaSyDp5wzHrVUM-VCEbDaXryh6Prod",
+        authDomain: "devstream-prod.firebaseapp.com",
+      },
+      tenantId: '[[.Firebase.Prod.TenantId.Public]]',
+    },
+    sessionExpiration: {
+      idleTimeSeconds: 1800,
+      sessionTimeSeconds: 64800,
+    },
+  },
+  httpConfiguration: {
+    baseUrl: "https://api-prod.devstream.dsgov.demo.nuvalence.io",
+  },
+}

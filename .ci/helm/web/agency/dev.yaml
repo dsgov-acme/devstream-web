@@ -1,0 +1,23 @@
+environment: "dev"
+
+net:
+  host: "agency-dev.devstream.dsgov.demo.nuvalence.io"
+
+environmentJSON: {
+  authenticationConfiguration: {
+    firebaseConfiguration: {
+      firebase: {
+        apiKey: "AIzaSyCBhPXQArHs0vCqLc9CyrMJt2mI2UB-tRc",
+        authDomain: "devstream-dev.firebaseapp.com",
+      },
+      tenantId: 'agency-portal-ug493',
+    },
+    sessionExpiration: {
+      idleTimeSeconds: 1800,
+      sessionTimeSeconds: 64800,
+    },
+  },
+  httpConfiguration: {
+    baseUrl: "https://api-dev.devstream.dsgov.demo.nuvalence.io",
+  },
+}

@@ -1,0 +1,19 @@
+<div class="header"><h2>File Upload</h2></div>
+<div class="file-container">
+  <div>
+    <nuverial-file-upload
+      [uploadProgress]="uploadProgressFront"
+      (cancelUpload)="onCancelFrontUpload()"
+      (uploadDocument)="onUploadDocumentFront($event)"
+      documentTitle="License Front"
+    ></nuverial-file-upload>
+  </div>
+  <div>
+    <nuverial-file-upload
+      [uploadProgress]="uploadProgressBack"
+      (cancelUpload)="onCancelBackUpload()"
+      (uploadDocument)="onUploadDocumentBack($event)"
+      documentTitle="License Back"
+    ></nuverial-file-upload>
+  </div>
+</div>

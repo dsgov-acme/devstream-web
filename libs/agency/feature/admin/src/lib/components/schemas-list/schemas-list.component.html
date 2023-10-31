@@ -1,0 +1,76 @@
+<h1 class="title">Schemas</h1>
+<ng-container class="schemas-list">
+  <div class="schemas-list__actions">
+    <nuverial-text-input
+      class="filter"
+      ariaLabel="Search schemas"
+      [formControl]="searchInput"
+      [suffixIcon]="searchBoxIcon"
+      [type]="'text'"
+      (clickIcon)="clearSearch()"
+      (keyup.enter)="handleSearch()"
+      (keyup)="setSearchBoxIcon()"
+      placeholder="Search by Name/Key"
+      style="width: 1000px"
+    />
+    <nuverial-button
+      class="new-schema-button"
+      ariaLabel="Submit"
+      [loading]="false"
+      (click)="navigateToAddSchema()"
+      buttonStyle="filled"
+      buttonType="submit"
+      colorTheme="primary"
+    >
+      <nuverial-icon class="white-icon" iconName="add" />
+      NEW SCHEMA
+    </nuverial-button>
+  </div>
+  <div class="schemas-list__table">
+    <ng-container *ngIf="schemaDefinitionsList$ | async">
+      <table
+        aria-describedby="schemas list table"
+        [dataSource]="dataSourceTable"
+        [matSortActive]="pagingRequestModel.sortBy"
+        [matSortDirection]="sortDirection"
+        (matSortChange)="sortData($event)"
+        mat-table
+        matSort
+        multiTemplateDataRows
+      >
+        <ng-container *ngFor="let col of displayedColumns; trackBy: trackByFn" [matColumnDef]="col.value">
+          <th
+            class="schemas-list__table--header"
+            *matHeaderCellDef
+            [disabled]="col.sortable ? false : true"
+            [mat-sort-header]="col.sortable === true ? col.value : ''"
+            [style.width]="col.width || 'auto'"
+            mat-header-cell
+          >
+            {{col.label | dsgSplitCamelCase }}
+          </th>
+          <span>
+            <td *matCellDef="let element" mat-cell>{{element[col.value] }}</td>
+          </span>
+        </ng-container>
+        <tr *matHeaderRowDef="displayColumnValues" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayColumnValues;" mat-row></tr>
+      </table>
+      <mat-paginator
+        aria-label="Select page"
+        #tablePaginator
+        [class.hidden]="!pagingMetadata?.totalCount"
+        [length]="pagingMetadata?.totalCount"
+        [pageIndex]="pagingMetadata?.pageNumber"
+        [pageSize]="pagingMetadata?.pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="setPage($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </ng-container>
+    <ng-container *ngIf=" schemaListIsLoading">
+      <nuverial-spinner />
+    </ng-container>
+  </div>
+</ng-container>

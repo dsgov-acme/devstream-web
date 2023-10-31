@@ -1,0 +1,14 @@
+@use '@dsg/shared-theme/partials/mixins' as mixins;
+
+:host form-builder ::ng-deep,
+::ng-deep .formio-dialog {
+  @import 'bootstrap/scss/bootstrap.scss';
+}
+
+:host {
+  @include mixins.formBuilder-formBuilderStyles();
+}
+
+::ng-deep {
+  @include mixins.formBuilder-dialogStyles();
+}

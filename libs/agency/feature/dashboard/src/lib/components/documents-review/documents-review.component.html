@@ -1,0 +1,42 @@
+<div class="documents-review">
+  <ng-container *ngIf="(customerDocuments$ | async) as documents">
+    <ng-container *ngIf="loading">
+      <nuverial-spinner></nuverial-spinner>
+    </ng-container>
+    <div class="documents-review__document" *ngFor="let document of documents; let i = index; trackBy: trackByFn" [formGroup]="formGroup">
+      <div class="documents-review__left">
+        <h4 class="documents-review__document--title">{{document.label || 'Document ' + (i + 1)}}</h4>
+        <div class="documents-review__document--reasons" *ngIf="document.rejectionReasons && document.rejectionReasons.length > 0">
+          <span>Reasons:</span>
+          <ul>
+            <li *ngFor="let reason of document.rejectionReasons; let i = index; trackBy: trackByFn">{{rejectedReasonsLabels[reason]}}</li>
+          </ul>
+        </div>
+        <div class="documents-review__document--reviewed-by" *ngIf="document.reviewedBy">
+          {{document.reviewedByDisplayName}} reviewed on {{document.reviewedOn | date:"MM/dd/yy, h:mm:ss a" }}
+        </div>
+      </div>
+
+      <span class="documents-review__document--error" *ngIf="document.shouldDisplayErrors && document.processingResult">
+        <nuverial-file-processor-tooltip [processors]="document.processingResult"></nuverial-file-processor-tooltip>
+      </span>
+
+      <nuverial-select
+        class="documents-review__document--status no-border"
+        ariaLabel="Review Status"
+        *ngIf="reviewReasonsSelectOptions$ | async as reviewReasonsSelectOptions"
+        [formControlName]="document.id"
+        [required]="true"
+        [selectedClearable]="false"
+        [selectOptions]="reviewReasonsSelectOptions"
+        (validOptionSelected)="handleReviewStatus($event, document)"
+        matInput
+        ngDefaultControl
+        placeholder="Review status"
+      >
+      </nuverial-select>
+
+      <a class="documents-review__document--link" (click)="openDocument(document.id)" (keyup.enter)="openDocument(document.id)" tabindex="0">View</a>
+    </div>
+  </ng-container>
+</div>

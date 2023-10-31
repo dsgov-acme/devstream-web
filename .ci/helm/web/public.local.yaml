@@ -1,0 +1,17 @@
+net:
+  host: 'public.devstream.test'
+
+environmentJSON: {
+  authenticationConfiguration: {
+    firebaseConfiguration: {
+      firebase: {
+        apiKey: "AIzaSyCBhPXQArHs0vCqLc9CyrMJt2mI2UB-tRc",
+        authDomain: "devstream-dev.firebaseapp.com",
+      },
+      tenantId: 'public-portal-a2kyb',
+    },
+  },
+  httpConfiguration: {
+    baseUrl: 'http://api.devstream.test',
+  },
+}

@@ -1,0 +1,83 @@
+<div class="builder-container">
+  <ng-container *ngIf="loading">
+    <nuverial-spinner class="overlay"></nuverial-spinner>
+  </ng-container>
+  <div class="breadcrumb-container">
+    <nuverial-breadcrumb [breadCrumbs]="breadCrumbs"></nuverial-breadcrumb>
+  </div>
+
+  <ng-container>
+    <dsg-builder-header [metaData]="metaDataFields$ | async"></dsg-builder-header>
+  </ng-container>
+
+  <ng-container *ngIf="formio$ | async as form">
+    <nuverial-split-area
+      class="split-area"
+      #splitArea
+      [area2InitialSize]="area2InitialSize"
+      [area2MinWidth]="150"
+      [ngClass]="{ hideGutter: !showPreview }"
+      (splitDragging)="onSplitDrag($event)"
+    >
+      <ng-container [ngSwitch]="currentSelectorTab" child1>
+        <div class="split-container-1">
+          <div class="button-row">
+            <nuverial-selector-button [tabs]="selectorTabs" (selectEvent)="onTabSelect($event)"></nuverial-selector-button>
+            <nuverial-button ariaLabel="Preview" *ngIf="!this.showPreview" (click)="togglePreview()" buttonStyle="filled" buttonType="button"
+              >Preview
+              <nuverial-icon iconName="vertical_split"></nuverial-icon>
+            </nuverial-button>
+          </div>
+          <section *ngSwitchCase="selectorTabs[0].key">
+            <section class="formio-builder">
+              <form-builder #formio [form]="form" [options]="options"></form-builder>
+            </section>
+            <section class="selector-options-wrapper">
+              <nuverial-button ariaLabel="Save changes" (click)="saveChanges(formio.form)" buttonStyle="outlined" buttonType="button" colorTheme="primary"
+                >Save changes
+              </nuverial-button>
+            </section>
+          </section>
+          <section *ngSwitchCase="selectorTabs[1].key" [ngClass]="[showPreview ? 'nuverial-json-editor-split-area' : 'nuverial-json-editor']">
+            <nuverial-json-editor [formioJSONObject]="formioJSONObject"> </nuverial-json-editor>
+          </section>
+        </div>
+      </ng-container>
+      <ng-container [ngSwitch]="currentPreviewSelectorTab" child2>
+        <div class="split-container-2">
+          <nuverial-button
+            ariaLabel="Preview"
+            (click)="togglePreview()"
+            buttonStyle="filled"
+            buttonType="button"
+            colorTheme="primary"
+            style="margin-right: auto"
+            >Preview
+            <nuverial-icon iconName="vertical_split"></nuverial-icon>
+          </nuverial-button>
+          <nuverial-selector-button [tabs]="previewSelectorTabs" (selectEvent)="onPreviewTabSelect($event)"></nuverial-selector-button>
+          <section *ngSwitchCase="previewSelectorTabs[0].key">
+            <dsg-form-renderer
+              [fields$]="intakeFormFields$"
+              [model$]="formData$"
+              [options]="intakeRendererOptions"
+              style="margin: 0 auto 4rem auto"
+            ></dsg-form-renderer>
+          </section>
+          <section *ngSwitchCase="previewSelectorTabs[1].key">
+            <dsg-form-renderer
+              [fields$]="reviewFormFields$"
+              [model$]="formData$"
+              [options]="reviewRendererOptions"
+              style="margin: 0 auto 4rem auto"
+            ></dsg-form-renderer>
+          </section>
+        </div>
+      </ng-container>
+    </nuverial-split-area>
+
+    <section class="stepper-container">
+      <pre>{{formData$ | async | json}}</pre>
+    </section>
+  </ng-container>
+</div>

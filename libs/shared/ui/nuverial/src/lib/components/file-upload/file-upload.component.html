@@ -1,0 +1,108 @@
+<div class="upload-container">
+  <div class="document-title" *ngIf="documentTitle">{{documentTitle}}</div>
+  <div class="upload-status {{status}}-status" *ngIf="status !== statusOptions.initial && status !== statusOptions.pending">
+    <ng-container [ngSwitch]="status">
+      <nuverial-icon *ngSwitchCase="statusOptions.failure" iconName="error"></nuverial-icon>
+      <nuverial-icon *ngSwitchCase="statusOptions.processing" iconName="refresh"></nuverial-icon>
+      <nuverial-icon *ngSwitchCase="statusOptions.success" iconName="check_circle"></nuverial-icon>
+    </ng-container>
+    <span class="status-message">{{statusMessage}}</span>
+    <span class="processing-tooltip-wrapper" *ngIf="status === statusOptions.failure && processors?.length">
+      <nuverial-file-processor-tooltip [processors]="processors"></nuverial-file-processor-tooltip>
+    </span>
+  </div>
+
+  <file-upload
+    [attr.aria-label]="ariaLabel"
+    [control]="fileUploadControl"
+    [multiple]="multiple"
+    [ngClass]="{
+    'overlay-background': status === statusOptions.success || status === statusOptions.pending || status === statusOptions.processing || imageError,
+    'pending-upload': status === statusOptions.pending
+    }"
+  >
+    <ng-template #placeholder let-isFileDragDropAvailable="fileDragDropAvailable">
+      <div class="no-preview-container loading-preview" *ngIf="loading">
+        <nuverial-icon iconName="preview"></nuverial-icon>
+        <div>Loading Preview</div>
+      </div>
+      <div *ngIf="status === statusOptions.initial">
+        <div class="desktop" *ngIf="!loading">
+          <nuverial-icon iconName="cloud_upload_outline"></nuverial-icon>
+          <div class="upload-text">
+            <p class="drag-drop-message">
+              Drag and drop your file, or
+              <span class="browse" (click)="handleFileBrowserOpen($event)" (keyup.enter)="handleFileBrowserOpen($event)" tabindex="0">browse</span>
+            </p>
+            <span class="file-size">The file must be {{maxFileSize}}MB or smaller in size.</span>
+          </div>
+        </div>
+        <div class="mobile">
+          <nuverial-button class="picture-button" ariaLabel="TAKE PICTURE" (click)="captureMobilePhoto($event)" buttonStyle="outlined">
+            TAKE PICTURE
+            <nuverial-icon iconName="camera_alt_outline"></nuverial-icon>
+          </nuverial-button>
+          <nuverial-button ariaLabel="CHOOSE FILE" (click)="handleFileBrowserOpen($event)" buttonStyle="outlined"> CHOOSE FILE </nuverial-button>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template class="overlay" #item let-control="fileUploadControl" let-file="file" let-i="index">
+      <div
+        class="success"
+        [ngClass]="{
+        'pending': status === statusOptions.pending || imageError,
+        'image-error': imageError
+      }"
+      >
+        <ng-container *ngIf="status === statusOptions.success || status === statusOptions.processing || status === statusOptions.failure">
+          <ng-container *ngIf="uploadedFile | async as preview">
+            <img class="preview-image" *ngIf="!imageError" [src]="preview" (error)="imageError = true" alt="Document preview" />
+            <div class="no-preview-container no-preview" *ngIf="imageError">
+              <nuverial-icon iconName="preview_off_outline"></nuverial-icon>
+              <div>No Preview Available</div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class="progress" *ngIf="status === statusOptions.pending">
+        <div class="progress-bar" [ngStyle]="{ 'width': progressWidth }"></div>
+      </div>
+
+      <div class="button-container">
+        <nuverial-button ariaLabel="Re-upload" (click)="handleFileBrowserOpen($event)">
+          Re-upload
+          <nuverial-icon iconName="cloud_upload"></nuverial-icon>
+        </nuverial-button>
+
+        <ng-container [ngSwitch]="true">
+          <nuverial-button ariaLabel="Cancel" *ngSwitchCase="status === statusOptions.pending" (click)="stopUpload()">
+            Cancel
+            <nuverial-icon iconName="cancel"></nuverial-icon>
+          </nuverial-button>
+
+          <nuverial-button
+            ariaLabel="Download"
+            *ngSwitchCase="status === statusOptions.success || status === statusOptions.processing || status === statusOptions.failure"
+            (click)="downloadFile(file)"
+          >
+            Download
+            <nuverial-icon iconName="download_file"></nuverial-icon>
+          </nuverial-button>
+
+          <nuverial-button
+            ariaLabel="Remove"
+            *ngSwitchCase="status === statusOptions.success || status === statusOptions.processing || status === statusOptions.failure"
+            (click)="removeFile(file)"
+          >
+            Remove
+            <nuverial-icon iconName="delete"></nuverial-icon>
+          </nuverial-button>
+        </ng-container>
+      </div>
+    </ng-template>
+  </file-upload>
+</div>
+
+<mat-error *ngIf="error$ | async as error"><nuverial-icon iconName="error_outline"></nuverial-icon>{{error}}</mat-error>
+<input aria-hidden="true" #fileInput (change)="handleFileSelection($event)" type="file" />

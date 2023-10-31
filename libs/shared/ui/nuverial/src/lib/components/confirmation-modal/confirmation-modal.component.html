@@ -1,0 +1,12 @@
+<div class="confirmation-modal">
+  <div class="modal-header" mat-dialog-close><span class="material-symbols-outlined"> close </span></div>
+  <mat-dialog-content class="modal-title">
+    <h2 class="modal-title">{{modalData.nuverialConfirmationModalText}}</h2>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <nuverial-button class="modal-btn cancel-btn" ariaLabel="Cancel" buttonStyle="outlined" colorTheme="primary" mat-dialog-close>Cancel</nuverial-button>
+    <nuverial-button class="modal-btn" ariaLabel="Save" [mat-dialog-close]="true" (click)="onApprove()" buttonStyle="filled" colorTheme="primary">
+      {{modalData.nuverialConfirmationModalButtonLabel}}
+    </nuverial-button>
+  </mat-dialog-actions>
+</div>

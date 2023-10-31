@@ -1,0 +1,127 @@
+@use '@dsg/shared-theme/partials/mixins' as mixins;
+@use '@dsg/shared-theme/partials/functions/rem';
+@use '@dsg/shared-theme/partials/variables' as themeVars;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  flex: 1;
+
+  .title {
+    padding-left: rem.fromPx(34px);
+  }
+  .transactions-list {
+    &__actions {
+      width: 325px;
+      position: absolute;
+      right: 40px;
+
+      ::ng-deep .mat-mdc-form-field-icon-suffix {
+        padding-right: 1rem;
+
+        .nuverial-button.mat-mdc-icon-button:hover {
+          padding: 1.5rem;
+          position: relative;
+          left: 0.75rem;
+        }
+      }
+    }
+
+    &__tab {
+      font-weight: 700;
+      letter-spacing: normal;
+      font-size: 16px;
+
+      &--badge {
+        background-color: var(--theme-color-m3-neutral-60);
+        color: var(--theme-color-white);
+        padding: 2px 12px;
+        border-radius: 6px;
+        margin-left: 7px;
+      }
+    }
+
+    &__table {
+      flex-direction: column;
+      flex: 1;
+      @include mixins.table-styleTable();
+
+      .mat-mdc-table {
+        border-left: none !important;
+      }
+
+      .mat-mdc-paginator {
+        border-left: none !important;
+      }
+
+      .priority {
+        font-weight: var(--theme-typography-font-weight-bold);
+        display: flex;
+        align-items: center;
+
+        &.low {
+          $color: var(--theme-color-priority-low);
+          color: $color;
+          ::ng-deep .mat-icon {
+            color: $color !important;
+          }
+        }
+
+        &.medium {
+          $color: var(--theme-color-priority-medium);
+          color: $color;
+          ::ng-deep .mat-icon {
+            color: $color !important;
+          }
+        }
+
+        &.high {
+          $color: var(--theme-color-priority-high);
+          color: $color;
+          ::ng-deep .mat-icon {
+            color: $color !important;
+          }
+        }
+
+        &.urgent {
+          $color: var(--theme-color-priority-urgent);
+          color: $color;
+          ::ng-deep .mat-icon {
+            color: $color !important;
+          }
+        }
+      }
+
+      &--header {
+        color: var(--theme-color-secondary);
+      }
+
+      &--filter {
+        width: 25%;
+        float: right;
+        margin: -10px 0 -20px 0;
+        min-width: 250px;
+        top: -55px;
+        position: relative;
+      }
+    }
+  }
+
+  ::ng-deep .transactions-list__table {
+    margin-top: 2rem;
+  }
+
+  ::ng-deep .transactions-list__table--tabs .mat-mdc-tab.mdc-tab {
+    max-width: 200px;
+  }
+
+  ::ng-deep .mdc-tab--active .transactions-list__tab--badge {
+    background-color: var(--theme-color-primary) !important;
+  }
+
+  .hidden {
+    display: none;
+  }
+}

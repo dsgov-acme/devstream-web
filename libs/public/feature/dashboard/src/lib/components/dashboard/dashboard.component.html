@@ -1,0 +1,66 @@
+<section class="header">
+  <span>
+    <h1>Welcome<span *ngIf="profile$ | async as profile">{{profile.displayName ? ', ' + profile.displayName : ''}}</span></h1>
+    <p>View/update your applications or submit a new one</p>
+  </span>
+
+  <nuverial-button ariaLabel="New application" (click)="createNewTransaction()" buttonStyle="outlined" colorTheme="primary">New Application</nuverial-button>
+</section>
+
+<section class="transactions" *ngIf="transactions$ | async as transactions; else loading">
+  <ng-container *ngIf="transactions.length; else emptyTransactionsState">
+    <div class="transaction-container" *ngFor="let transaction of transactions; trackBy:trackByFn">
+      <div>
+        <div>
+          <h1 class="application-card-title">{{transaction.transactionDefinitionName}}</h1>
+          <h2 class="application-transaction-id">Transaction ID: {{transaction.externalId | uppercase}}</h2>
+        </div>
+        <div class="timestamps">
+          <div>Created On: {{transaction.createdTimestamp | date:'MM/dd/yyyy'}}</div>
+          <div><i>(Last update {{transaction.lastUpdatedTimestamp | date:'MM/dd/yyyy h:mm a'}})</i></div>
+        </div>
+        <div class="application-status">Status: <b>{{transaction.status | titlecase}}</b></div>
+        <div class="documents-requested" *ngIf="transaction.rejectedDocuments.length > 0">
+          <div class="alert">
+            <nuverial-icon iconName="notifications_outline"></nuverial-icon>
+            <span>One or more documents require correction</span>
+          </div>
+          <ul>
+            <li *ngFor="let document of transaction.rejectedDocuments; trackBy:trackByFn">{{document}}</li>
+          </ul>
+        </div>
+        <div *ngIf="transaction.activeTasks.length > 0; else readonly">
+          <nuverial-button
+            ariaLabel="Edit application"
+            [queryParams]="{resume: 'true'}"
+            [routerLink]="['/dashboard/transaction/' + transaction.id]"
+            buttonStyle="filled"
+            colorTheme="primary"
+            routerLinkActive="router-link-active"
+            >Continue</nuverial-button
+          >
+        </div>
+        <ng-template #readonly>
+          <nuverial-button
+            ariaLabel="View submitted application"
+            [routerLink]="['/dashboard/transaction/' + transaction.id]"
+            buttonStyle="filled"
+            colorTheme="primary"
+            routerLinkActive="router-link-active"
+            >View Application</nuverial-button
+          >
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</section>
+
+<ng-template #emptyTransactionsState>
+  <div class="transaction-container">
+    <p>There are currently no active applications.</p>
+  </div>
+</ng-template>
+
+<ng-template #loading>
+  <nuverial-spinner></nuverial-spinner>
+</ng-template>

@@ -1,0 +1,25 @@
+@mixin attributeStyles() {
+  display: block;
+
+  .attribute-container {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: initial;
+    background-color: var(--theme-color-m3-neutral-30);
+    color: var(--theme-color-white);
+    border-radius: 10px;
+    padding: 0 1rem;
+
+    p {
+      margin: 0;
+    }
+
+    .white-icon {
+      ::ng-deep .mat-icon {
+        color: var(--theme-color-white);
+        margin-right: 5px;
+      }
+    }
+  }
+}
