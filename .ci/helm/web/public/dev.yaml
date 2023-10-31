@@ -10,7 +10,7 @@ environmentJSON: {
         apiKey: "AIzaSyCBhPXQArHs0vCqLc9CyrMJt2mI2UB-tRc",
         authDomain: "devstream-dev.firebaseapp.com",
       },
-      tenantId: 'public-portal-a2kyb',
+      tenantId: 'public-portal-jz932',
     },
     sessionExpiration: {
       idleTimeSeconds: 1800,
