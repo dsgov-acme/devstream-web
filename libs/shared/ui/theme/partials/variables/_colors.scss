@@ -3,9 +3,9 @@
 /*
 Define colors for Material theme as theme generation does not fully support not support CSS
  */
-$primary: #1f1f1f;
-$secondary: #696969;
-$tertiary: #f76e39;
+$primary: #1f2025;
+$secondary: #4a4a4a;
+$tertiary: #0f61a9;
 $error: #de0000;
 $red: #be1e2d;
 $black: #000000;
@@ -21,6 +21,7 @@ $box-shadow: 0 rem.fromPx(2px) rem.fromPx(8px) rgba(0, 0, 0, 0.15);
 
   --theme-color-tertiary: #{$tertiary};
   --theme-color-tertiary-opaque-08: rgba(247, 110, 57, 0.08);
+  --theme-color-tertiary-opaque-38: rgba(247, 110, 57, 0.38);
 
   --theme-color-success: #237a00;
   --theme-color-success-secondary: #d7ecdc;

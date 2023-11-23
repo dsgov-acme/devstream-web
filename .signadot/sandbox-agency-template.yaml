@@ -1,0 +1,22 @@
+name: 'sandbox-agency-@{gitsha}'
+spec:
+  ttl:
+    duration: 2h
+  labels:
+    app: agency
+    git_sha: '@{gitsha}'
+  description: Sandbox to test changes to agency app
+  cluster: devstream-dev-cluster
+  forks:
+  - forkOf:
+      kind: Deployment
+      name: agency
+      namespace: devstream
+    customizations:
+      images:
+      - image: '@{image}'
+  endpoints:
+  - name: agency
+    host: agency.devstream.svc
+    port: 80
+    protocol: http

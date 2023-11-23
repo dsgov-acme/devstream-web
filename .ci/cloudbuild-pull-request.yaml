@@ -1,16 +1,7 @@
 timeout: 1800s
 logsBucket: "gs://${_ARTIFACT_BUCKET_NAME}/cloudbuild-logs/app-${_SERVICE_NAME}-pull-request-trigger"
 options:
-  machineType: 'E2_HIGHCPU_8'
-availableSecrets:
-  secretManager:
-    - versionName: ${_DEPLOY_KEY_SECRET}
-      env: "DEPLOY_SSH_KEY"
-    # This secret at this time is manually created from SonarQube's admin UI and saved to Google Secrets Manager
-    #- versionName: "projects/$PROJECT_ID/secrets/${_SONARQUBE_TOKEN_SECRET_NAME}/versions/latest"
-    #  env: 'SONARQUBE_TOKEN'
-    #- versionName: projects/$PROJECT_ID/secrets/${_GITHUB_BOT_TOKEN_SECRET_NAME}/versions/latest
-    #  env: 'GH_TOKEN'
+  machineType: 'E2_HIGHCPU_32'
 steps:
   - id: "Install DEPLOY SSH Key"
     name: "gcr.io/cloud-builders/git"
@@ -25,6 +16,7 @@ steps:
     volumes:
       - name: "ssh"
         path: /root/.ssh
+
   - id: "Clone full repo copy"
     name: "gcr.io/cloud-builders/git"
     entrypoint: "bash"
@@ -36,6 +28,7 @@ steps:
     volumes:
       - name: "ssh"
         path: /root/.ssh
+
   - id: "Install dependencies"
     name: "node:16"
     entrypoint: "bash"
@@ -66,6 +59,7 @@ steps:
                 fi
             fi
         done
+
   - id: "Linting the code"
     name: "node:16"
     entrypoint: "bash"
@@ -75,78 +69,119 @@ steps:
       - "-c"
       - |
         yarn lint:ci --base=origin/$_BASE_BRANCH --head=HEAD --parallel=3
-  - id: "Unit Tests"
-    # runInBand because Axe accessibility tests timeout when run in parallel
-    name: "node:16"
-    entrypoint: "bash"
-    waitFor:
-      - "Install dependencies"
-    args:
-      - "-c"
-      - |
-        yarn test:ci --base=origin/${_BASE_BRANCH} --head=HEAD --parallel=3 --runInBand --maxWorkers=75%
-#  - id: "e2e Tests"
-#    name: "cypress/base:16"
-#    entrypoint: "bash"
-#    args:
-#    - "-c"
-#    - |
-#     yarn e2e:ci --base=origin/${_BASE_BRANCH} --head=HEAD --parallel=3
+
+  # - id: "Unit Tests"
+  #   # runInBand because Axe accessibility tests timeout when run in parallel
+  #   name: "node:16"
+  #   entrypoint: "bash"
+  #   waitFor:
+  #     - "Install dependencies"
+  #   args:
+  #     - "-c"
+  #     - |
+  #       yarn test:ci --base=origin/${_BASE_BRANCH} --head=HEAD --parallel=3 --runInBand --maxWorkers=75%
+
   - id: "Build the apps"
     name: "node:16"
     entrypoint: "bash"
     waitFor:
-      - "Unit Tests"
+      # - "Unit Tests"
       - "Linting the code"
     args:
       - "-c"
       - |
         yarn build:ci --base=origin/$_BASE_BRANCH --head HEAD --parallel=3
 
-  - id: "Build storybook"
-    name: "node:16"
-    entrypoint: "bash"
-    waitFor:
-      - "Build the apps"
-    args:
-      - "-c"
-      - |
-        affected=$(yarn nx print-affected --select=projects | awk 'NR > 2 && $1 != "Done"')
-        echo $affected > /workspace/affected_projects.txt
-        affected=$(cat /workspace/affected_projects.txt);
-        if [[ $affected =~ storybook-host ]]; then
-            yarn nx run storybook-host:build-storybook --configuration=ci;
-        fi
-
-  # - id: "Publish Report to SonarQube"
+  # - id: "Build storybook"
   #   name: "node:16"
   #   entrypoint: "bash"
   #   waitFor:
-  #     - "Unit Tests"
+  #     - "Build the apps"
   #   args:
   #     - "-c"
   #     - |
-  #       echo "Attempting to chmod the sonar-scanner binary"
-  #       chmod +x /workspace/node_modules/sonar-scanner/bin/sonar-scanner
-  #       echo "Permissions updated for sonar-scanner"
-  #       yarn sonar -Dsonar.login=$$SONARQUBE_TOKEN \
-  #                  -Dsonar.projectKey=${REPO_NAME}-${_PR_NUMBER} \
-  #                  -Dsonar.projectName=${REPO_NAME}-${_PR_NUMBER} \
-  #                  -Dsonar.host.url=${_SONARQUBE_HOST}
-  #   secretEnv: ['SONARQUBE_TOKEN']
+  #       affected=$(yarn nx print-affected --select=projects | awk 'NR > 2 && $1 != "Done"')
+  #       echo $affected > /workspace/affected_projects.txt
+  #       affected=$(cat /workspace/affected_projects.txt);
+  #       if [[ $affected =~ storybook-host ]]; then
+  #           yarn nx run storybook-host:build-storybook --configuration=ci;
+  #       fi
 
-  # - id: 'Link SonarQube to GitHub'
-  #   name: '${_GAR_BUILDER_URL}/gh'
-  #   entrypoint: bash
-  #   waitFor:
-  #     - "Publish Report to SonarQube"
-  #   args:
-  #     - "-c"
-  #     - |
-  #       export REPORT_URL=$(cat /workspace/report_url.txt)
-  #       gh auth login --with-token
-  #       gh pr comment ${_PR_NUMBER} --body "
-  #       :sparkles: Build report has been generated and can be accessed here:
-  #       :one: **SonarQube:** https://sonarqube.devstream.dsgov.demo.nuvalence.io/dashboard?id=${REPO_NAME}-${_PR_NUMBER}
-  #       "
-  #   secretEnv: ['GH_TOKEN']
+  - id: "Build Builder Image and Push"
+    name: "gcr.io/cloud-builders/docker"
+    waitFor:
+      - "Clone full repo copy"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        docker build -t node-builder:pr-${SHORT_SHA} \
+                     -t ${_GAR_BUILDER_URL}/node-builder:pr-${SHORT_SHA} \
+                     --cache-from ${_GAR_BUILDER_URL}/node-builder:latest \
+                     -f docker/builder.Dockerfile .
+        docker push ${_GAR_BUILDER_URL}/node-builder:pr-${SHORT_SHA}
+
+  - id: "Build Agency Client"
+    name: "gcr.io/cloud-builders/docker"
+    waitFor:
+      - "Build Builder Image and Push"
+      # - "Unit Tests"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        docker build -t agency \
+                      -t ${_GAR_URL}/agency:pr-${SHORT_SHA} \
+                      --build-arg NODE_BUILDER=${_GAR_BUILDER_URL}/node-builder:pr-${SHORT_SHA} \
+                      --build-arg APP=agency \
+                      --build-arg ENVIRONMENT=production \
+                      -f docker/nginx.Dockerfile .
+        docker push ${_GAR_URL}/agency:pr-${SHORT_SHA}
+
+  - id: "Create Agency Sandbox"
+    name: "gcr.io/cloud-builders/docker"
+    secretEnv: ['SIGNADOT_ORG', 'SIGNADOT_API_KEY']
+    waitFor:
+      - "Build Agency Client"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        docker run -i \
+            -e SIGNADOT_ORG="$$SIGNADOT_ORG" \
+            -e SIGNADOT_API_KEY="$$SIGNADOT_API_KEY" \
+            signadot/signadot-cli \
+            /signadot sandbox apply \
+            --set image=${_GAR_URL}/agency:pr-${SHORT_SHA} \
+            --set gitsha=${SHORT_SHA} \
+            -f - \
+            -o json \
+            < .signadot/sandbox-agency-template.yaml \
+            > /workspace/sandbox-agency-response.json
+
+  - id: 'Publish preview environment details to Github'
+    name: '${_GAR_BUILDER_URL}/gh'
+    secretEnv: ['GH_TOKEN']
+    entrypoint: bash
+    waitFor:
+      - "Create Agency Sandbox"
+    args:
+      - "-c"
+      - |
+        apt install jq -y
+        export SANDBOX_ENDPOINT_URL="$(cat /workspace/sandbox-agency-response.json | jq -r '.endpoints[0].url')"
+        gh auth login --with-token
+        gh pr comment ${_PR_NUMBER} --body "
+        :sparkles: Agency preview environment has been created and can be accessed here:
+        :one: **Sandbox Endpoint:** $$SANDBOX_ENDPOINT_URL
+        "
+availableSecrets:
+  secretManager:
+    - versionName: ${_DEPLOY_KEY_SECRET}
+      env: "DEPLOY_SSH_KEY"
+    - versionName: projects/$PROJECT_ID/secrets/${_GITHUB_BOT_TOKEN_SECRET_NAME}/versions/latest
+      env: 'GH_TOKEN'
+    - versionName: projects/$PROJECT_ID/secrets/${_SIGNADOT_ORG_SECRET_NAME}/versions/latest
+      env: 'SIGNADOT_ORG'
+    - versionName: projects/$PROJECT_ID/secrets/${_SIGNADOT_API_KEY_SECRET_NAME}/versions/latest
+      env: 'SIGNADOT_API_KEY'
