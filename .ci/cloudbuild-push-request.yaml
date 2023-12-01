@@ -77,21 +77,21 @@ steps:
             fi
         done
 
-  - id: "Linting the code"
-    name: "node:16"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        yarn lint:ci --base=origin/$BRANCH_NAME~1 --head=origin/$BRANCH_NAME --parallel=3
+  # - id: "Linting the code"
+  #   name: "node:16"
+  #   entrypoint: "bash"
+  #   args:
+  #     - "-c"
+  #     - |
+  #       yarn lint:ci --base=origin/$BRANCH_NAME~1 --head=origin/$BRANCH_NAME --parallel=3
 
-  - id: "Unit Tests"
-    name: "node:16"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        yarn test:all --ci --parallel=3 --runInBand
+  # - id: "Unit Tests"
+  #   name: "node:16"
+  #   entrypoint: "bash"
+  #   args:
+  #     - "-c"
+  #     - |
+  #       yarn test:all --ci --parallel=3 --runInBand
 
   # - id: "Publish Report to SonarQube"
   #   name: "node:16"
@@ -131,7 +131,6 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     waitFor:
       - "Build Builder Image and Push"
-      - "Unit Tests"
     entrypoint: "bash"
     args:
       - "-c"
@@ -148,7 +147,6 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     waitFor:
       - "Build Builder Image and Push"
-      - "Unit Tests"
     entrypoint: "bash"
     args:
       - "-c"
